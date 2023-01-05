@@ -1,3 +1,6 @@
+-- mb_substring
+require('base.substring')
+
 --[[
    From https://github.com/victorso/.hammerspoon/blob/master/tools/clipboard.lua
    Modified by Diego Zamboni
@@ -11,8 +14,6 @@
    -> Ng irc suggestion: hs.settings.set("jumpCutReplacementHistory", clipboard_history)
 ]] --
 -- Feel free to change those settings
-require('base.substring')
-
 local frequency = 0.8 -- Speed in seconds to check for clipboard changes. If you check too frequently, you will loose performance, if you check sparsely you will loose copies
 local hist_size = 100 -- How many items to keep on history
 local label_length = 50 -- How wide (in characters) the dropdown menu should be. Copies larger than this will have their label truncated and end with "…" (unicode for elipsis ...)
