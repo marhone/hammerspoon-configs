@@ -98,14 +98,16 @@ populateMenu = function(key)
                     title = mb_substring(v, 0, label_length) .. "…",
                     fn = function()
                         putOnPaste(v, key)
-                    end
+                    end,
+                    tooltip = v
                 }) -- Truncate long strings
             else
                 table.insert(menuData, 1, {
                     title = v,
                     fn = function()
                         putOnPaste(v, key)
-                    end
+                    end,
+                    tooltip = v
                 })
             end -- end if else
         end -- end for
