@@ -121,17 +121,23 @@ populateMenu = function(key)
         if (string.len(current_item) > label_length) then
             current_item = mb_substring(current_item, 0, label_length) .. "…"
         end
-        table.insert(menuData, {
+        table.insert(menuData, 1, {
             title = "Current: " .. current_item,
             tooltip = pasteboard.getContents(),
             disabled = true
         })
+        -- table.insert(menuData, 2, {
+        --     title = "-"
+        -- })
     end
     table.insert(menuData, {
         title = "Total Record(s): " .. #clipboard_history,
         disabled = true
     })
     if (key.alt == true) then
+        table.insert(menuData, {
+            title = "-"
+        })
         table.insert(menuData, {
             title = "🗑 Clear All",
             fn = function()
