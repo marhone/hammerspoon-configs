@@ -151,5 +151,7 @@ setTitle() -- Avoid wrong title if the user already has something on his saved h
 jumpcut:setMenu(populateMenu)
 
 hs.hotkey.bind({"cmd", "shift"}, "v", function()
-    jumpcut:popupMenu(hs.mouse.getAbsolutePosition())
+    -- jumpcut:popupMenu(hs.mouse.getAbsolutePosition())
+    -- Dark Mode
+    jumpcut:popupMenu(hs.mouse.getAbsolutePosition(), true)
 end)
