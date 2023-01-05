@@ -116,18 +116,35 @@ populateMenu = function(key)
     table.insert(menuData, {
         title = "-"
     })
-    table.insert(menuData, {
-        title = "🗑 Clear All",
-        fn = function()
-            clearAll()
+    local current_item = pasteboard.getContents()
+    if type(current_item) == "string" then 
+        if (string.len(current_item) > label_length) then
+            current_item = mb_substring(current_item, 0, label_length) .. "…"
         end
-    })
-    if (key.alt == true or pasteOnSelect) then
         table.insert(menuData, {
-            title = "Direct Paste Mode ✍",
+            title = "Current: " .. current_item,
+            tooltip = pasteboard.getContents(),
             disabled = true
         })
     end
+    table.insert(menuData, {
+        title = "Total Record(s): " .. #clipboard_history,
+        disabled = true
+    })
+    if (key.alt == true) then
+        table.insert(menuData, {
+            title = "🗑 Clear All",
+            fn = function()
+                clearAll()
+            end
+        })
+    end
+    -- if (key.alt == true or pasteOnSelect) then
+    --     table.insert(menuData, {
+    --         title = "Direct Paste Mode ✍",
+    --         disabled = true
+    --     })
+    -- end
     return menuData
 end
 
