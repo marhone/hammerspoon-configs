@@ -99,7 +99,7 @@ populateMenu = function(key)
                     fn = function()
                         putOnPaste(v, key)
                     end,
-                    tooltip = v
+                    tooltip = mb_substring(v, 0, 300) .. "…",
                 }) -- Truncate long strings
             else
                 table.insert(menuData, 1, {
@@ -107,7 +107,7 @@ populateMenu = function(key)
                     fn = function()
                         putOnPaste(v, key)
                     end,
-                    tooltip = v
+                    tooltip = mb_substring(v, 0, 300) .. "…",
                 })
             end -- end if else
         end -- end for
@@ -117,13 +117,14 @@ populateMenu = function(key)
         title = "-"
     })
     local current_item = pasteboard.getContents()
+    local source = current_item
     if type(current_item) == "string" then 
         if (string.len(current_item) > label_length) then
             current_item = mb_substring(current_item, 0, label_length) .. "…"
         end
         table.insert(menuData, 1, {
             title = "Current: " .. current_item,
-            tooltip = pasteboard.getContents(),
+            tooltip = mb_substring(source, 0, 300) .. "…",
             disabled = true
         })
         -- table.insert(menuData, 2, {
