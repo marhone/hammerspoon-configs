@@ -97,11 +97,17 @@ populateMenu = function(key)
         for k, v in pairs(clipboard_history) do
             if (string.len(v) > label_length) then
                 table.insert(menuData, 1, {
-                    title = mb_substring(v, 0, label_length) .. "…",
+                    title = hs.styledtext.new(mb_substring(v, 0, label_length) .. "…", {
+                        font = {
+                            size = 12
+                        },
+                        color = hs.drawing.color.definedCollections.hammerspoon.osx_green
+                    }),
+                    -- title = mb_substring(v, 0, label_length) .. "…",
                     fn = function()
                         putOnPaste(v, key)
                     end,
-                    tooltip = mb_substring(v, 0, 300) .. "…",
+                    tooltip = mb_substring(v, 0, 300) .. "…"
                 }) -- Truncate long strings
             else
                 table.insert(menuData, 1, {
@@ -109,7 +115,7 @@ populateMenu = function(key)
                     fn = function()
                         putOnPaste(v, key)
                     end,
-                    tooltip = mb_substring(v, 0, 300) .. "…",
+                    tooltip = mb_substring(v, 0, 300) .. "…"
                 })
             end -- end if else
         end -- end for
@@ -120,7 +126,7 @@ populateMenu = function(key)
     })
     local current_item = pasteboard.getContents()
     local source = current_item
-    if type(current_item) == "string" then 
+    if type(current_item) == "string" then
         if (string.len(current_item) > label_length) then
             current_item = mb_substring(current_item, 0, label_length) .. "…"
         end

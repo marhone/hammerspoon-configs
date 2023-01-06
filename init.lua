@@ -7,8 +7,6 @@ require("app.clipboard")
 
 -- require("app.colorpicker")
 
-hs.loadSpoon("ClipShow")
-
 -- 测试脚本
 hs.hotkey.bind({"cmd", "alt"}, "t", function()
     hs.toggleConsole()
