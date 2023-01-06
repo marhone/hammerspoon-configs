@@ -6,7 +6,6 @@ end)
 function show_battery_info()
     hs.alert.closeAll()
     text = get_battery_info()
-    print(text)
     hs.alert.show(text, {
         strokeWidth = 3,
         strokeColor = {
@@ -44,7 +43,6 @@ function to_pretty_strings(list)
         end
     end
 
-    print(max_length)
     result = {}
     for k, v in pairs(list) do
         local length = #k + spaces + #tostring(v)
@@ -57,7 +55,6 @@ function to_pretty_strings(list)
         end
 
         local line = string.format("%s%s%s", k, white, v)
-        print(#line, line)
         table.insert(result, line)
     end
 
