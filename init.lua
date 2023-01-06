@@ -4,7 +4,7 @@ require("base.common")
 require("app.manipulation")
 require("app.battery")
 require("app.clipboard")
-require("app.tinker")
+-- require("app.tinker")
 
 -- Hammer console
 hs.hotkey.bind({"cmd", "alt"}, "p", function()
