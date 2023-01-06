@@ -6,19 +6,7 @@ end)
 function show_battery_info() 
     hs.alert.closeAll()
     text = get_battery_info()
-    hs.alert.show(text, {
-        strokeWidth  = 3,
-        strokeColor = { white = 1, alpha = 1 },
-        fillColor   = { white = 0, alpha = 0.75 },
-        textColor = { white = 1, alpha = 1 },
-        textFont  = ".AppleSystemUIFont",
-        textSize  = 25,
-        radius = 15,
-        atScreenEdge = 0,
-        fadeInDuration = 0.15,
-        fadeOutDuration = 0.35,
-        padding = 20,
-    })
+    hs.alert.show(text, ALERT_TEXT_STYLE)
 end
 
 function get_battery_info()
