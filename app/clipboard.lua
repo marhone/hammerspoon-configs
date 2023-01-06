@@ -1,5 +1,7 @@
 -- mb_substring
 require('base.substring')
+local hashfn = require("hs.hash").MD5
+
 
 --[[
    From https://github.com/victorso/.hammerspoon/blob/master/tools/clipboard.lua
@@ -80,8 +82,25 @@ function pasteboardToClipboard(item)
         table.remove(clipboard_history, 1)
     end
     table.insert(clipboard_history, item)
+    -- Remove duplication
+    clipboard_history = remove_duplicated_item(clipboard_history)
     settings.set("so.victor.hs.jumpcut", clipboard_history) -- updates the saved history
     setTitle() -- updates the menu counter
+end
+
+function remove_duplicated_item(list)
+    local result = {}
+    local hashes = {}
+    for i, v in ipairs(list) do
+        if #result < hist_size then
+            local hash = hashfn(v)
+            if (not hashes[hash]) then
+                table.insert(result, v)
+                hashes[hash] = true
+            end
+        end
+    end
+    return result
 end
 
 -- Dynamic menu by cmsj https://github.com/Hammerspoon/hammerspoon/issues/61#issuecomment-64826257
