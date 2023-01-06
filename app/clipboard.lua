@@ -46,12 +46,14 @@ function putOnPaste(string, key)
         pasteboard.setContents(string)
         last_change = pasteboard.changeCount()
     else
-        if (key.alt == true) then -- If the option/alt key is active when clicking on the menu, perform a "direct paste", without changing the clipboard
-            hs.eventtap.keyStrokes(string) -- Defeating paste blocking http://www.hammerspoon.org/go/#pasteblock
-        else
-            pasteboard.setContents(string)
-            last_change = pasteboard.changeCount() -- Updates last_change to prevent item duplication when putting on paste
-        end
+        -- if (key.alt == true) then -- If the option/alt key is active when clicking on the menu, perform a "direct paste", without changing the clipboard
+        --     hs.eventtap.keyStrokes(string) -- Defeating paste blocking http://www.hammerspoon.org/go/#pasteblock
+        -- else
+        --     pasteboard.setContents(string)
+        --     last_change = pasteboard.changeCount() -- Updates last_change to prevent item duplication when putting on paste
+        -- end
+        pasteboard.setContents(string)
+        last_change = pasteboard.changeCount() -- Updates last_change to prevent item duplication when putting on paste
     end
 end
 
