@@ -20,7 +20,7 @@ hs.alert.show(string.format("%s\n%s", date, message), {
     strokeColor = { white = 1, alpha = 1 },
     fillColor   = { white = 0, alpha = 0.75 },
     textColor = { white = 1, alpha = 1 },
-    textFont  = "Chalkduster",
+    textFont  = "Arial Black",
     textSize  = 17,
     radius = 15,
     atScreenEdge = 0,
