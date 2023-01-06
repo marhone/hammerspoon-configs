@@ -14,7 +14,7 @@ ALERT_TEXT_STYLE = {
     },
     textFont = ".AppleSystemUIFont",
     textSize = 25,
-    radius = 15,
+    radius = 9,
     atScreenEdge = 0,
     fadeInDuration = 0.15,
     fadeOutDuration = 0.35,

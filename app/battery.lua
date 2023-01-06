@@ -22,7 +22,7 @@ function show_battery_info()
         },
         textFont = "Arial Black",
         textSize = 16,
-        radius = 15,
+        radius = 9,
         atScreenEdge = 0,
         fadeInDuration = 0.15,
         fadeOutDuration = 0.35,

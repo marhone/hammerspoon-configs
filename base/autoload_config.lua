@@ -22,7 +22,7 @@ hs.alert.show(string.format("%s\n%s", date, message), {
     textColor = { white = 1, alpha = 1 },
     textFont  = "Arial Black",
     textSize  = 17,
-    radius = 15,
+    radius = 9,
     atScreenEdge = 0,
     fadeInDuration = 0.15,
     fadeOutDuration = 0.35,
