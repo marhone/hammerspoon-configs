@@ -57,6 +57,8 @@ function putOnPaste(string, key)
         pasteboard.setContents(string)
         last_change = pasteboard.changeCount() -- Updates last_change to prevent item duplication when putting on paste
     end
+    -- 重新排列顺序
+    rerange_clipborad_list(string)
 end
 
 -- Clears the clipboard and history
@@ -81,26 +83,28 @@ function pasteboardToClipboard(item)
     while (#clipboard_history >= hist_size) do
         table.remove(clipboard_history, 1)
     end
-    table.insert(clipboard_history, item)
-    -- Remove duplication
-    clipboard_history = remove_duplicated_item(clipboard_history)
+    rerange_clipborad_list(item)
     settings.set("so.victor.hs.jumpcut", clipboard_history) -- updates the saved history
     setTitle() -- updates the menu counter
 end
 
-function remove_duplicated_item(list)
+function rerange_clipborad_list(item)
+    table.insert(clipboard_history, item)
+    -- Remove duplication
+    local list = clipboard_history
     local result = {}
     local hashes = {}
     for i, v in ipairs(list) do
         if #result < hist_size then
             local hash = hashfn(v)
-            if (not hashes[hash]) then
+            if (not hashes[hash]) and hashfn(item) ~= hash then
                 table.insert(result, v)
                 hashes[hash] = true
             end
         end
     end
-    return result
+    table.insert(result, item)
+    clipboard_history = result
 end
 
 -- Dynamic menu by cmsj https://github.com/Hammerspoon/hammerspoon/issues/61#issuecomment-64826257
