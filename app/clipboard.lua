@@ -89,6 +89,9 @@ function pasteboardToClipboard(item)
 end
 
 function rerange_clipborad_list(item)
+    if item == nil or item == '' then
+        return
+    end
     table.insert(clipboard_history, item)
     -- Remove duplication
     local list = clipboard_history
