@@ -88,8 +88,12 @@ function pasteboardToClipboard(item)
     setTitle() -- updates the menu counter
 end
 
+function trim(s)
+    return (s:gsub("^%s*(.-)%s*$", "%1"))
+ end
+
 function rerange_clipborad_list(item)
-    if item == nil or item == '' then
+    if item == nil or trim(item) == '' then
         return
     end
     table.insert(clipboard_history, item)
@@ -123,7 +127,7 @@ populateMenu = function(key)
         for k, v in pairs(clipboard_history) do
             if (string.len(v) > label_length) then
                 table.insert(menuData, 1, {
-                    title = hs.styledtext.new(mb_substring(v, 0, label_length) .. "…", {
+                    title = hs.styledtext.new(trim(mb_substring(v, 0, label_length)) .. "…", {
                         font = {
                             size = 12
                         },
@@ -137,7 +141,7 @@ populateMenu = function(key)
                 }) -- Truncate long strings
             else
                 table.insert(menuData, 1, {
-                    title = v,
+                    title = trim(v),
                     fn = function()
                         putOnPaste(v, key)
                     end,
