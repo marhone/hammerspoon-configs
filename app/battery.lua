@@ -71,3 +71,7 @@ function get_battery_info()
 
     return to_pretty_strings(info)
 end
+
+
+-- local timer = hs.timer.new(10, show_battery_info)
+-- timer:start()
