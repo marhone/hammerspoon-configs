@@ -1,13 +1,11 @@
 -- Author: marhone
 -- Desc:   clipboard
-
 local module = {
     version = '1.0.1'
 }
 
 require('base.substring')
 local hashfn = require("hs.hash").MD5
-
 
 local frequency = 0.8 -- Speed in seconds to check for clipboard changes. If you check too frequently, you will loose performance, if you check sparsely you will loose copies
 local hist_size = 100 -- How many items to keep on history
@@ -24,6 +22,7 @@ local last_change = pasteboard.changeCount() -- displays how many times the past
 
 -- Array to store the clipboard history
 local clipboard_history = settings.get("so.victor.hs.jumpcut") or {} -- If no history is saved on the system, create an empty history
+local favorites = settings.get("so.victor.hs.jumpcut_favorites") or {} -- Favorites items
 
 -- Append a history counter to the menu
 local function setTitle()
@@ -54,6 +53,17 @@ local function putOnPaste(string, key)
     rerange_clipborad_list(string)
 end
 
+local function addToFavorite(string, key) 
+    table.insert(favorites, string)
+    rerange_favorites_list(string)
+
+    settings.set('so.victor.hs.jumpcut_favorites', favorites)
+end
+
+local function loadFavorites()
+    return settings.get("so.victor.hs.jumpcut_favorites") or {}
+end
+
 -- Clears the clipboard and history
 local function clearAll()
     pasteboard.clearContents()
@@ -61,6 +71,11 @@ local function clearAll()
     settings.set("so.victor.hs.jumpcut", clipboard_history)
     now = pasteboard.changeCount()
     setTitle()
+end
+
+local function clearFavorites()
+    favorites = {}
+    settings.set('so.victor.hs.jumpcut_favorites', favorites)
 end
 
 -- Clears the last added to the history
@@ -83,7 +98,7 @@ end
 
 local function trim(s)
     return (s:gsub("^%s*(.-)%s*$", "%1"))
- end
+end
 
 function rerange_clipborad_list(item)
     if item == nil or trim(item) == '' then
@@ -107,10 +122,34 @@ function rerange_clipborad_list(item)
     clipboard_history = result
 end
 
+function rerange_favorites_list(item)
+    if item == nil or trim(item) == '' then
+        return
+    end
+    table.insert(favorites, item)
+    -- Remove duplication
+    local list = favorites
+    local result = {}
+    local hashes = {}
+    for i, v in ipairs(list) do
+        if #result < hist_size then
+            local hash = hashfn(v)
+            if (not hashes[hash]) and hashfn(item) ~= hash then
+                table.insert(result, v)
+                hashes[hash] = true
+            end
+        end
+    end
+    table.insert(result, item)
+    favorites = result
+end
+
 -- Dynamic menu by cmsj https://github.com/Hammerspoon/hammerspoon/issues/61#issuecomment-64826257
 local makePopulatedMenuList = function(key)
     setTitle() -- Update the counter every time the menu is refreshed
     menuItems = {}
+    local current_item = pasteboard.getContents()
+    local source = current_item
     if (#clipboard_history == 0) then
         table.insert(menuItems, {
             title = "None",
@@ -118,6 +157,14 @@ local makePopulatedMenuList = function(key)
         }) -- If the history is empty, display "None"
     else
         for k, v in pairs(clipboard_history) do
+            local quickAdd = {{
+                title = "Add " ..
+                    string.format('`%s`', trim(#v > 50 and mb_substring(v, 0, 50) or v)) ..
+                    " to Favorites",
+                fn = function()
+                    addToFavorite(v, key)
+                end
+            }}
             if (string.len(v) > label_length) then
                 table.insert(menuItems, 1, {
                     title = hs.styledtext.new(trim(mb_substring(v, 0, label_length)) .. "…", {
@@ -129,7 +176,9 @@ local makePopulatedMenuList = function(key)
                     fn = function()
                         putOnPaste(v, key)
                     end,
-                    tooltip = #v > tooltip_size and (mb_substring(v, 0, tooltip_size) .. "…") or v
+                    tooltip = #v > tooltip_size and (mb_substring(v, 0, tooltip_size) .. "…") or v,
+                    checked = current_item == v and true or false,
+                    menu = quickAdd,
                 })
             else
                 table.insert(menuItems, 1, {
@@ -137,7 +186,9 @@ local makePopulatedMenuList = function(key)
                     fn = function()
                         putOnPaste(v, key)
                     end,
-                    tooltip = #v > tooltip_size and (mb_substring(v, 0, tooltip_size) .. "…") or v
+                    tooltip = #v > tooltip_size and (mb_substring(v, 0, tooltip_size) .. "…") or v,
+                    checked = current_item == v and true or false,
+                    menu = quickAdd,
                 })
             end
         end
@@ -145,11 +196,50 @@ local makePopulatedMenuList = function(key)
     table.insert(menuItems, {
         title = "-"
     })
-    local current_item = pasteboard.getContents()
-    local source = current_item
+    local favoriteList = {}
+    table.insert(menuItems, 1, {
+        title = "Favorites",
+        menu = favoriteList
+    })
+    for _, favorited in pairs(loadFavorites()) do
+        table.insert(favoriteList, {
+            title = favorited,
+            fn = function()
+                putOnPaste(favorited, key)
+            end,
+            checked = current_item == favorited and true or false,
+        })
+    end
+    if (key.alt == true) then
+        table.insert(favoriteList, {
+            title = "-"
+        })
+        table.insert(favoriteList, {
+            title = "Delete All",
+            fn = function()
+                clearFavorites()
+            end
+        })
+    end
+    table.insert(menuItems, 2, {
+        title = "-"
+    })
     if type(current_item) == "string" then
         if (string.len(current_item) > label_length) then
             current_item = mb_substring(current_item, 0, label_length) .. "…"
+        end
+        if #trim(current_item) > 0 then 
+            table.insert(favoriteList, {
+                title = "Add " ..
+                    string.format('`%s`', trim(#current_item > 50 and mb_substring(current_item, 0, 50) or current_item)) ..
+                    " to Favorites",
+                fn = function()
+                    addToFavorite(current_item, key)
+                end
+            })
+            table.insert(favoriteList, {
+                title = "-"
+            })
         end
         table.insert(menuItems, 1, {
             title = "Current: " .. current_item,
@@ -166,7 +256,7 @@ local makePopulatedMenuList = function(key)
             title = "-"
         })
         table.insert(menuItems, {
-            title = "🗑 Clear All",
+            title = "🗑 Delete All",
             fn = function()
                 clearAll()
             end
