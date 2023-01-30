@@ -247,7 +247,7 @@ local makePopulatedMenuList = function(key)
             })
         end
         table.insert(menuItems, 1, {
-            title = "Current: " .. current_item,
+            title = "Clipborad: " .. current_item,
             tooltip = #source > tooltip_size and (mb_substring(source, 0, tooltip_size) .. "…") or source,
             disabled = true
         })
