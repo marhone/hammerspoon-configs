@@ -53,11 +53,25 @@ local function putOnPaste(string, key)
     rerange_clipborad_list(string)
 end
 
-local function addToFavorite(string, key)
+local function addToFavorite(string)
     table.insert(favorites, string)
     rerange_favorites_list(string)
 
     settings.set('so.victor.hs.jumpcut_favorites', favorites)
+end
+
+local function removeFromFavorite(string)
+    local index = 0
+    for k, v in pairs(favorites) do
+        if string == v then
+            index = k
+            break
+        end
+    end
+    if index ~= 0 then
+        table.remove(favorites, index)
+        settings.set('so.victor.hs.jumpcut_favorites', favorites)
+    end
 end
 
 local function loadFavorites()
@@ -160,7 +174,25 @@ local makePopulatedMenuList = function(key)
             local quickAdd = {{
                 title = "Favorite " .. string.format('`%s`', trim(#v > 50 and mb_substring(v, 0, 50) or v)),
                 fn = function()
-                    addToFavorite(v, key)
+                    addToFavorite(v)
+                end
+            }, {
+                title = "-"
+            },
+            {
+                title = "Delete",
+                fn = function()
+                    local index = 0
+                    for _index, _item in pairs(clipboard_history) do
+                        if v == _item then
+                            index = _index
+                            break
+                        end
+                    end
+                    if index ~= 0 then
+                        table.remove(clipboard_history, index)
+                        settings.set("so.victor.hs.jumpcut", clipboard_history)
+                    end
                 end
             }}
             if (string.len(v) > label_length) then
@@ -202,11 +234,17 @@ local makePopulatedMenuList = function(key)
     local favoritedItems = loadFavorites()
     for _, favorited in pairs(favoritedItems) do
         table.insert(favoriteList, {
-            title = favorited,
+            title = #favorited > label_length and mb_substring(trim(favorited), 0, label_length) or trim(favorited),
             fn = function()
                 putOnPaste(favorited, key)
             end,
-            checked = current_item == favorited and true or false
+            checked = current_item == favorited and true or false,
+            menu = {{
+                title = "Delete",
+                fn = function()
+                    removeFromFavorite(favorited)
+                end
+            }}
         })
     end
     if #favoritedItems == 0 then
@@ -220,7 +258,7 @@ local makePopulatedMenuList = function(key)
             title = "-"
         })
         table.insert(favoriteList, {
-            title = "Delete All",
+            title = "🗑 Delete All",
             fn = function()
                 clearFavorites()
             end
@@ -239,7 +277,7 @@ local makePopulatedMenuList = function(key)
                     string.format('`%s`', trim(#current_item > 50 and mb_substring(current_item, 0, 50) or current_item)) ..
                     " to Favorites",
                 fn = function()
-                    addToFavorite(current_item, key)
+                    addToFavorite(current_item)
                 end
             })
             table.insert(favoriteList, 2, {
