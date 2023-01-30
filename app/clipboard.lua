@@ -53,7 +53,7 @@ local function putOnPaste(string, key)
     rerange_clipborad_list(string)
 end
 
-local function addToFavorite(string, key) 
+local function addToFavorite(string, key)
     table.insert(favorites, string)
     rerange_favorites_list(string)
 
@@ -158,9 +158,7 @@ local makePopulatedMenuList = function(key)
     else
         for k, v in pairs(clipboard_history) do
             local quickAdd = {{
-                title = "Add " ..
-                    string.format('`%s`', trim(#v > 50 and mb_substring(v, 0, 50) or v)) ..
-                    " to Favorites",
+                title = "Favorite " .. string.format('`%s`', trim(#v > 50 and mb_substring(v, 0, 50) or v)),
                 fn = function()
                     addToFavorite(v, key)
                 end
@@ -178,7 +176,7 @@ local makePopulatedMenuList = function(key)
                     end,
                     tooltip = #v > tooltip_size and (mb_substring(v, 0, tooltip_size) .. "…") or v,
                     checked = current_item == v and true or false,
-                    menu = quickAdd,
+                    menu = quickAdd
                 })
             else
                 table.insert(menuItems, 1, {
@@ -188,7 +186,7 @@ local makePopulatedMenuList = function(key)
                     end,
                     tooltip = #v > tooltip_size and (mb_substring(v, 0, tooltip_size) .. "…") or v,
                     checked = current_item == v and true or false,
-                    menu = quickAdd,
+                    menu = quickAdd
                 })
             end
         end
@@ -201,13 +199,20 @@ local makePopulatedMenuList = function(key)
         title = "Favorites",
         menu = favoriteList
     })
-    for _, favorited in pairs(loadFavorites()) do
+    local favoritedItems = loadFavorites()
+    for _, favorited in pairs(favoritedItems) do
         table.insert(favoriteList, {
             title = favorited,
             fn = function()
                 putOnPaste(favorited, key)
             end,
-            checked = current_item == favorited and true or false,
+            checked = current_item == favorited and true or false
+        })
+    end
+    if #favoritedItems == 0 then
+        table.insert(favoriteList, {
+            title = "None",
+            disabled = true
         })
     end
     if (key.alt == true) then
@@ -228,8 +233,8 @@ local makePopulatedMenuList = function(key)
         if (string.len(current_item) > label_length) then
             current_item = mb_substring(current_item, 0, label_length) .. "…"
         end
-        if #trim(current_item) > 0 then 
-            table.insert(favoriteList, {
+        if #trim(current_item) > 0 then
+            table.insert(favoriteList, 1, {
                 title = "Add " ..
                     string.format('`%s`', trim(#current_item > 50 and mb_substring(current_item, 0, 50) or current_item)) ..
                     " to Favorites",
@@ -237,7 +242,7 @@ local makePopulatedMenuList = function(key)
                     addToFavorite(current_item, key)
                 end
             })
-            table.insert(favoriteList, {
+            table.insert(favoriteList, 2, {
                 title = "-"
             })
         end
