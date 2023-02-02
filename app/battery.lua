@@ -91,7 +91,6 @@ end
 
 function battery_info_to_text()
     local info = get_battery_info()
-    hs.notify.new({title="Battery Monitor", informativeText="Cycle Count: " .. info["Cycle Count"]}):send()
 
     return to_pretty_strings(info)
 end
@@ -99,6 +98,7 @@ end
 
 battery_timer = hs.timer.new(3600, function()
     local info = get_battery_info()
+    hs.notify.new({title="Battery Monitor", informativeText="Cycle Count: " .. info["Cycle Count"]}):send()
 end)
 battery_timer:start()
 
