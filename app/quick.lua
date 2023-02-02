@@ -1,3 +1,4 @@
+local alert = require('app.my_alert')
 
 -- Hammer console
 hs.hotkey.bind({"cmd", "alt"}, "c", function()
@@ -6,7 +7,7 @@ end)
 
 -- 测试脚本
 hs.hotkey.bind({"cmd", "alt"}, "t", function()
-    hs.alert.show("cmd + alt + t", ALERT_TEXT_STYLE);
+    alert.show("cmd + alt + t", ALERT_TEXT_STYLE);
 end)
 
 -- Unotes
