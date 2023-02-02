@@ -324,8 +324,8 @@ local function syncSysCopyboard()
 end
 
 -- Checks for changes on the pasteboard. Is it possible to replace with eventtap?
-timer = hs.timer.new(frequency, syncSysCopyboard)
-timer:start()
+clipboard_timer = hs.timer.new(frequency, syncSysCopyboard)
+clipboard_timer:start()
 
 setTitle() -- Avoid wrong title if the user already has something on his saved history
 popboard:setMenu(makePopulatedMenuList)

@@ -1,11 +1,12 @@
--- 查看电池信息
-hs.hotkey.bind({"cmd", "alt"}, "b", function()
-    show_battery_info()
-end)
+-- Desc: 记录电池充电状态
+-- Author: marhone
+
+require('base.store')
+local battery_logs = get_store('battery_logs')
 
 function show_battery_info()
     hs.alert.closeAll()
-    text = get_battery_info()
+    text = battery_info_to_text()
     hs.alert.show(text, {
         strokeWidth = 3,
         strokeColor = {
@@ -43,7 +44,7 @@ function to_pretty_strings(list)
         end
     end
 
-    result = {}
+    local result = {}
     for k, v in pairs(list) do
         local length = #k + spaces + #tostring(v)
         -- 空格样式
@@ -68,10 +69,40 @@ function get_battery_info()
         ["Power Source"] = hs.battery.powerSource(),
         ["Cycle Count"] = hs.battery.cycles(),
     }
+    local date = os.date("%Y-%m-%d %X", os.time())
+    local has_in = false;
+    for key, value in pairs(battery_logs) do
+        if key == date then
+            has_in = true;
+            break;
+        end
+    end
+    if not has_in then
+        battery_logs[date] = info
+        set_store('battery_logs', battery_logs)
+    end
+
+    for k, v in pairs(battery_logs) do
+        print(k, v['Power Source'])
+    end
+
+    return info
+end
+
+function battery_info_to_text()
+    local info = get_battery_info()
+    hs.notify.new({title="Battery Monitor", informativeText="Cycle Count: " .. info["Cycle Count"]}):send()
 
     return to_pretty_strings(info)
 end
 
 
--- local timer = hs.timer.new(10, show_battery_info)
--- timer:start()
+battery_timer = hs.timer.new(3600, function()
+    local info = get_battery_info()
+end)
+battery_timer:start()
+
+-- 查看电池信息
+hs.hotkey.bind({"cmd", "alt"}, "b", function()
+    show_battery_info()
+end)
