@@ -12,7 +12,7 @@ end)
 
 -- Unotes
 hs.hotkey.bind({"cmd", "alt"}, "n", function()
-    hs.application.open('/Applications/unotes.app')
+    hs.application.open('/Applications/tnotes.app')
 end)
 
 
