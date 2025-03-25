@@ -10,6 +10,11 @@ hs.hotkey.bind({"cmd", "alt"}, "t", function()
     alert.show("cmd + alt + t", ALERT_TEXT_STYLE);
 end)
 
+-- 测试脚本
+hs.hotkey.bind({"option"}, "n", function()
+    hs.eventtap.keyStrokes("m");
+end)
+
 -- Unotes
 hs.hotkey.bind({"cmd", "alt"}, "n", function()
     hs.application.open('/Applications/tnotes.app')

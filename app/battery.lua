@@ -1,8 +1,8 @@
 -- Desc: 记录电池充电状态
 -- Author: marhone
 
-require('base.store')
-local battery_logs = get_store('battery_logs')
+-- require('base.store')
+-- local battery_logs = get_store('battery_logs')
 
 function show_battery_info()
     hs.alert.closeAll()
@@ -70,21 +70,20 @@ function get_battery_info()
         ["Cycle Count"] = hs.battery.cycles(),
     }
     local date = os.date("%Y-%m-%d %X", os.time())
-    local has_in = false;
-    for key, value in pairs(battery_logs) do
-        if key == date then
-            has_in = true;
-            break;
-        end
-    end
-    if not has_in then
-        battery_logs[date] = info
-        set_store('battery_logs', battery_logs)
-    end
-
-    for k, v in pairs(battery_logs) do
-        print(k, v['Power Source'])
-    end
+    -- local has_in = false;
+    -- for key, value in pairs(battery_logs) do
+    --     if key == date then
+    --         has_in = true;
+    --         break;
+    --     end
+    -- end
+    -- if not has_in then
+    --     battery_logs[date] = info
+    --     set_store('battery_logs', battery_logs)
+    -- end
+    -- for k, v in pairs(battery_logs) do
+    --     print(k, v['Power Source'])
+    -- end
 
     return info
 end
